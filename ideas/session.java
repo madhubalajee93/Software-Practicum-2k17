@@ -1,4 +1,4 @@
-package info.androidhive.loginandregistration.helper;
+package info.secondphase.loginandregistration.helper;
  
 import android.content.Context;
 import android.content.SharedPreferences;
