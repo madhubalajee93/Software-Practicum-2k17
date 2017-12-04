@@ -5,71 +5,122 @@ import org.json.JSONObject;
 
 public class JSONParser {
 
-	public String checklogin(JSONObject json) {
-		String res="false";
+	public String regdata(JSONObject json) {
+		String result="json";
 		
 		try {
-			res=json.getString("Value");
-		} catch (JSONException e) {
-			 res=e.getMessage();
-		}
-		return res;
-	}
-
-	public String getdocdetails(JSONObject json) {
-		String res=null;
-		try {
-			res=json.getString("Value");
+			result=json.getString("Value");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			result=e.getMessage();
 		}
-		return res;
+		return result;
 	}
 
-	public String getnot(JSONObject json) {
+	public String logindata(JSONObject json) {
+		String result="json";
 		
-		String res="parse";
 		try {
-			res=json.getString("Value");
+			result=json.getString("Value");
 		} catch (JSONException e) {
-			res=e.getMessage();
+			// TODO Auto-generated catch block
+			result=e.getMessage();
 		}
-		return res;
+		return result;
 	}
 
-	public String getpatt(JSONObject json) {
+	public String getpatdata(JSONObject json) {
+		String result="json";
 		
-		String res="parse";
 		try {
-			res=json.getString("Value");
+			result=json.getString("Value");
 		} catch (JSONException e) {
-			res=e.getMessage();
+			// TODO Auto-generated catch block
+			result=e.getMessage();
 		}
-		return res;
+		return result;
+	}
+
+	public String feeddata(JSONObject json) {
+		String result="json";
+		
+		try {
+			result=json.getString("Value");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			result=e.getMessage();
+		}
+		return result;
+	}
+
+	public String searchdoc(JSONObject json) {
+		String result="json";
+		
+		try {
+			result=json.getString("Value");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			result=e.getMessage();
+		}
+		return result;
+	}
+
+	public String onsymdata(JSONObject json) {
+			String result="json";
+		
+		try {
+			result=json.getString("Value");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			result="parse: "+e.getMessage();
+		}
+		return result;
+	}
+
+	public String autoid(JSONObject json) {
+		String result="json";
+		
+		try {
+			result=json.getString("Value");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			result="parse: "+e.getMessage();
+		}
+		return result;
+	}
+
+	public String twosymdata(JSONObject json) {
+		String result="json";
+		
+		try {
+			result=json.getString("Value");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			result="parse: "+e.getMessage();
+		}
+		return result;
+	}
+
+	public String patupdate(JSONObject json) {
+		String result="json";
+		try {
+			result=json.getString("Value");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			result="parse: "+e.getMessage();
+		}
+		return result;
+
 	}
 
 	public String getdis(JSONObject json) {
-		String res="parse";
+		String result="json";
 		try {
-			res=json.getString("Value");
+			result=json.getString("Value");
 		} catch (JSONException e) {
-			res=e.getMessage();
+			// TODO Auto-generated catch block
+			result="parse: "+e.getMessage();
 		}
-		return res;
+		return result;
 	}
-
-	public String update(JSONObject json) {
-		String res="parse";
-		try {
-			res=json.getString("Value");
-		} catch (JSONException e) {
-			res=e.getMessage();
-		}
-		return res;
-	}
-
-	
-	
-
 }

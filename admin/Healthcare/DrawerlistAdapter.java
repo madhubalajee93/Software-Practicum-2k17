@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.example.smart_health_prediction_doc.R;
+import com.example.smart_health_prediction_pat.R;
 
 public class DrawerlistAdapter extends BaseAdapter{
 

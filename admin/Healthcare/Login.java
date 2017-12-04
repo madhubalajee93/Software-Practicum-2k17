@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.smart_health_prediction_doc.R;
+import com.example.smart_health_prediction_pat.R;
 
 public class Login extends Activity{
 	EditText user,pass;
@@ -22,84 +22,145 @@ public class Login extends Activity{
 		user=(EditText) findViewById(R.id.userid);
 		pass=(EditText) findViewById(R.id.pass);
 		
-		
-		
-		
+		Intent i=getIntent();
+		try
+		{
+			String s=i.getStringExtra("id");
+			if(s.compareTo("")==0)
+			{
+				user.setText("");
+				pass.setText("");
+			}
+			else
+			{
+				user.setText(s);
+				pass.requestFocus();
+			}
+		}
+		catch(Exception e)
+		{
+			
+		}
 	}
+	
 	public void login(View v)
 	{
-		if(user.getText().toString().compareTo("")!=0 && pass.getText().toString().compareTo("")!=0)
-		{
-			new loginasync().execute(user.getText().toString(),pass.getText().toString());
-		}
-		else
+		if(user.getText().toString().compareTo("")==0 || pass.getText().toString().compareTo("")==0)
 		{
 			Toast.makeText(Login.this, "All Fields are Mandatory", Toast.LENGTH_SHORT).show();
 		}
+		else
+		{
+			new logindata().execute(user.getText().toString(),pass.getText().toString());
+		}
+	}
+	public void register(View v)
+	{
+		Intent i=new Intent(this,Register.class);
+		startActivity(i);
+	}
+	
+	
+	
+	public void onBackPressed()
+	{
+		finish();
 	}
 	
 	@Override
 	protected void onResume() {
-		pass.setText("");
-		user.setText("");
 		super.onResume();
+		Intent i=getIntent();
+		try
+		{
+			String s=i.getStringExtra("id");
+			if(s.compareTo("")==0)
+			{
+				user.setText("");
+				pass.setText("");
+			}
+			else
+			{
+				user.setText(s);
+				pass.requestFocus();
+			}
+		}
+		catch(Exception e)
+		{
+			user.setText("");
+			pass.setText("");
+		}
+		
 	}
 	
 	@Override
 	protected void onRestart() {
-		pass.setText("");
-		user.setText("");
 		super.onRestart();
+		Intent i=getIntent();
+		try
+		{
+			String s=i.getStringExtra("id");
+			if(s.compareTo("")==0)
+			{
+				user.setText("");
+				pass.setText("");
+			}
+			else
+			{
+				user.setText(s);
+				pass.requestFocus();
+			}
+		}
+		catch(Exception e)
+		{
+			user.setText("");
+			pass.setText("");
+		}
 	}
 	
-	public class loginasync extends AsyncTask<String, JSONObject, String>
+	public class logindata extends AsyncTask<String, JSONObject, String>
 	{
-		
 
 		@Override
 		protected String doInBackground(String... params) {
-			String check="false";
+			String a="back";
 			RestAPI api=new RestAPI();
-			
 			try {
-				JSONObject json=api.DocLogin(params[0], params[1]);
+				JSONObject json=api.PatLogin(params[0], params[1]);
 				JSONParser jp=new JSONParser();
-				check=jp.checklogin(json);
+				a=jp.logindata(json);
 			} catch (Exception e) {
-				check=e.getMessage();
+				a=e.getMessage();
 			}
 			
-			return check;
+			return a;
 		}
 		
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			String res="false";
 			
-			try{
-				res=result;
-				//Toast.makeText(Login.this, res, Toast.LENGTH_SHORT).show();
-				if(res.compareTo("true")==0)
-				{
-					Intent i=new Intent(Login.this,MainActivity.class);
-					i.putExtra("id", user.getText().toString());
-					startActivity(i);	
-				}
-				else
-				{
-					Toast.makeText(Login.this, "Aunthentication Failed", Toast.LENGTH_SHORT).show();
-					user.setText("");
-					pass.setText("");
-					user.requestFocus();
-				}
-			}catch(Exception e)
+			String b="post";
+			b=result;
+			if(b.compareTo("true")==0)
 			{
-				Toast.makeText(Login.this, e.getMessage()+"\n"+res, Toast.LENGTH_SHORT).show();
+				Intent i=new Intent(Login.this,MainActivity.class);
+				i.putExtra("patid", user.getText().toString());
+				startActivity(i);
+				
 			}
-			
-			
+			else if(b.compareTo("false")==0)
+			{
+				Toast.makeText(Login.this, "Invalid Username & Password", Toast.LENGTH_SHORT).show();
+				user.setText("");
+				pass.setText("");
+			}
+			else
+			{
+				Toast.makeText(Login.this, b, Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
+	
 	
 }

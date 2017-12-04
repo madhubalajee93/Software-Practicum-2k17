@@ -1,10 +1,5 @@
 package com.example.smart_health_prediction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.jar.Attributes.Name;
-
 import org.json.JSONObject;
 
 import android.app.Fragment;
@@ -17,34 +12,34 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.smart_health_prediction_doc.R;
+import com.example.smart_health_prediction_pat.R;
 
 public class My_Details extends Fragment{
-	Button edit,cancel;
-	EditText special,add,tel,name;
+	String patid;
 	TextView id;
-	
+	Button edit,cancel;
+	EditText name,add,tel,email;
 	int z=0;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v=inflater.inflate(R.layout.my_details, container,false);
-		id=(TextView) v.findViewById(R.id.iddata);
-		Intent i=getActivity().getIntent();
-		id.setText(i.getStringExtra("id"));
+		
 		name=(EditText) v.findViewById(R.id.nametxt);
+		id=(TextView) v.findViewById(R.id.detailid);
 		edit=(Button) v.findViewById(R.id.editbtn);
 		cancel=(Button) v.findViewById(R.id.cancelbtn);
-		special=(EditText) v.findViewById(R.id.spectxt);
-		
 		add=(EditText) v.findViewById(R.id.addtxt);
 		tel=(EditText) v.findViewById(R.id.teltxt);
+		email=(EditText) v.findViewById(R.id.emailtxt);
 		cancel.setAlpha(0);
 		
-		
+		Intent i=getActivity().getIntent();
+		patid=i.getStringExtra("patid");
+		id.setText(patid);
+		new detailsasync().execute(patid);
 		edit.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -52,19 +47,30 @@ public class My_Details extends Fragment{
 				z++;
 				if(z==1)
 				{
+					
 					add.setEnabled(true);
 					tel.setEnabled(true);
-					edit.setText("Update");
+					email.setEnabled(true);
+					edit.setText("update");
 					cancel.setAlpha(128);
 				}
 				if(z==2)
 				{
-					add.setEnabled(false);
-					tel.setEnabled(false);
-					edit.setText("Edit");
-					cancel.setAlpha(0);
-					new updatesyn().execute(id.getText().toString(),add.getText().toString(),tel.getText().toString());
-					z=0;
+					if(add.getText().toString().compareTo("")!=0 && tel.getText().toString().compareTo("")!=0 && email.getText().toString().compareTo("")!=0)
+					{
+						new Patupdate().execute(patid,add.getText().toString(),tel.getText().toString(),email.getText().toString());
+						add.setEnabled(false);
+						tel.setEnabled(false);
+						email.setEnabled(false);
+						edit.setText("Edit");
+						cancel.setAlpha(0);
+						Toast.makeText(getActivity(), "Updated", Toast.LENGTH_SHORT).show();
+						z=0;
+					}
+					else
+					{
+						Toast.makeText(getActivity(), "All Fields are Mandatory", Toast.LENGTH_SHORT).show();
+					}
 				}
 			}
 		});
@@ -73,90 +79,78 @@ public class My_Details extends Fragment{
 			
 			@Override
 			public void onClick(View v) {
+				
 				add.setEnabled(false);
 				tel.setEnabled(false);
+				email.setEnabled(false);
 				edit.setText("Edit");
 				cancel.setAlpha(0);
 				z=0;
 			}
 		});
-		
-		new detailsasync().execute(id.getText().toString());
-		
 		return v;
 	}
 	
 	public class detailsasync extends AsyncTask<String, JSONObject, String>
 	{
-		
 
 		@Override
 		protected String doInBackground(String... params) {
-			String check=null;
+			String a="back";
 			RestAPI api=new RestAPI();
-			
 			try {
-				JSONObject json=api.DocDetails(params[0]);
+				JSONObject json=api.PatData(params[0]);
 				JSONParser jp=new JSONParser();
-				check=jp.getdocdetails(json);
+				a=jp.getpatdata(json);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				a=e.getMessage();
 			}
-			return check;
+			return a;
 		}
+		
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			String check=null;
-			check=result;
 			
-			String[] s=check.split("\\$"); //split by $
+			String b="post";
+			b=result;
+			//Toast.makeText(getActivity(), b, Toast.LENGTH_SHORT).show();
 			
+			String[] s=b.split("\\$");
 			name.setText(s[1]);
 			add.setText(s[2]);
 			tel.setText(s[3]);
-			special.setText(s[4]);
-			//Toast.makeText(getActivity(), s[1], Toast.LENGTH_SHORT).show();
+			email.setText(s[4]);
+			
 			
 		}
-		
 	}
 	
-	public class updatesyn extends AsyncTask<String, JSONObject, String>
+	public class Patupdate extends AsyncTask<String, JSONObject, String>
 	{
 
 		@Override
 		protected String doInBackground(String... params) {
-			String check="back";
+			String a="back";
 			RestAPI api=new RestAPI();
-			
 			try {
-				JSONObject json=api.UpdateDoc(params[0], params[1], params[2]);
+				JSONObject json=api.updatepat(params[0], params[1], params[2], params[3]);
 				JSONParser jp=new JSONParser();
-				check=jp.update(json);
+				a=jp.patupdate(json);
 			} catch (Exception e) {
-				check=e.getMessage();
+				a=e.getMessage();
 			}
-			return check;
+			return a;
 		}
 		
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			String res="post";
+			String b="post";
+			b=result;
+			Toast.makeText(getActivity(), b, Toast.LENGTH_SHORT).show();
 			
-			res=result;
-			if(res.compareTo("post")==0)
-			{
-				Toast.makeText(getActivity(), "Problem in Updated", Toast.LENGTH_SHORT).show();
-			}
-			else
-			{
-				Toast.makeText(getActivity(), "Updated", Toast.LENGTH_SHORT).show();
-			}
 		}
-		
 	}
 
 }
